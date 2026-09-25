@@ -1,0 +1,26 @@
+_commit: v0.1.1-1-gb85b9b2
+_src_path: C:\Users\Info\PycharmProjects\microdrop-plugin-template
+anchor_package: gamepad_controls
+backend_group_label: Gamepad backend (board driver)
+backend_group_name: gamepad_backend
+backend_plugins: []
+description: 'MicroDrop gamepad plugin: frontend device-viewer interaction controls
+    driven by a game controller (no backend)'
+device_label: Gamepad
+device_name: gamepad
+entry_point_name: gamepad
+extra_force_includes: {}
+has_redis_gated_tests: false
+large_file_exclude: ''
+microdrop_dev_hooks_rev: v0.1.0
+optional_extras: {}
+package_name: gamepad-microdrop-plugin
+packages:
+- gamepad_controls
+run_dependencies:
+    pygame: '>=2.6.1,<3'
+ui_group_label: Gamepad UI (device-viewer electrode selection/stepping via game controller)
+ui_group_name: gamepad_ui
+ui_plugins:
+- gamepad_controls.plugin:GamepadControlsPlugin
+version: 0.1.0

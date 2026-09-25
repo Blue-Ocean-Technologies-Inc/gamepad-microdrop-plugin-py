@@ -1,0 +1,56 @@
+[project]
+name = "gamepad-microdrop-plugin"
+version = "0.1.0"
+description = "MicroDrop gamepad plugin: frontend device-viewer interaction controls driven by a game controller (no backend)"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Blue-Ocean-Technologies-Inc/gamepad-microdrop-plugin-py"
+
+# Discovered by MicroDrop's plugin manager: the entry point anchors the
+# distribution; the microdrop_plugin.toml manifest (shipped as package data of
+# the anchor via force-include) declares the toggleable plugin groups.
+[project.entry-points."microdrop.plugins"]
+gamepad = "gamepad_controls"
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["gamepad_controls"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"microdrop_plugin.toml" = "gamepad_controls/microdrop_plugin.toml"
+
+[tool.pixi.workspace]
+channels = ["conda-forge", "alexsk", "vignesh229"]
+preview = ["pixi-build"]
+
+[tool.pixi.package]
+name = "gamepad-microdrop-plugin"
+version = "0.1.0"
+
+[tool.pixi.package.build.backend]
+name = "pixi-build-python"
+version = "0.*"
+channels = ["https://prefix.dev/conda-forge"]
+
+[tool.pixi.package.host-dependencies]
+hatchling = "*"
+
+[tool.pixi.package.run-dependencies]
+pygame = ">=2.6.1,<3"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_provider = "pep621"
+tag_format = "v$version"
+bump_message = "chore: release v$new_version [skip ci]"
+update_changelog_on_bump = true
+# Repo-root Jinja template: release headers link to the GitHub release and
+# every entry links to its commit (see the template header for the variables).
+template = "CHANGELOG.md.j2"
+extras = { repo_url = "https://github.com/Blue-Ocean-Technologies-Inc/gamepad-microdrop-plugin-py" }
+version_files = ["pyproject.toml:^version"]

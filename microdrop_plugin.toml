@@ -1,0 +1,10 @@
+schema_version = 1
+name = "gamepad"
+label = "Gamepad"
+packages = ["gamepad_controls"]
+
+[[groups]]
+name = "gamepad_ui"
+label = "Gamepad UI (device-viewer electrode selection/stepping via game controller)"
+plugins = ["gamepad_controls.plugin:GamepadControlsPlugin"]
+enabled_key = "plugin_group_enabled.gamepad_ui"
