@@ -19,6 +19,13 @@ PKG_name = PKG.title().replace("_", " ")
 # equal device_viewer.consts.GAMEPAD_PLUGIN_PREFERENCES_PATH.
 PREFERENCES_PATH = "microdrop.gamepad_controls"
 
+# Id of the device viewer layer; the viewer mounts one layer per id.
+GAMEPAD_LAYER_ID = "gamepad"
+
+# The device viewer layer contract this plugin was built and tested against.
+# Microdrop logs a warning at mount when its own differs (and mounts anyway).
+LAYER_CONTRACT_VERSION_BUILT_AGAINST = "0.2.0"
+
 # ---------------------------------------------------------------------------
 # Gamepad defaults (editable on the Gamepad preferences tab). Env vars of the
 # form MICRODROP_GAMEPAD_* still override the stored preference at runtime.

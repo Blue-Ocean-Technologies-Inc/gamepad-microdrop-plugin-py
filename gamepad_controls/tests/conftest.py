@@ -20,6 +20,7 @@ from pyface.qt.QtWidgets import QApplication, QGraphicsView
 
 # Microdrop package imports.
 from device_viewer.consts import LayerContext
+from gamepad_controls.plugin import GamepadControlsPlugin
 from gamepad_controls.services import gamepad_interaction_service
 
 # Local imports.
@@ -63,3 +64,9 @@ def context(preferences):
         preferences=preferences,
         stepping=RecordingStepping(),
     )
+
+
+@pytest.fixture
+def plugin():
+    """The plugin, unattached: its contribution lists are plain lists."""
+    return GamepadControlsPlugin()
