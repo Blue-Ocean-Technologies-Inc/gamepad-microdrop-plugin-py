@@ -28,9 +28,10 @@ layer (`DEVICE_VIEWER_LAYERS`, layer contract 0.2.0):
 
 Needs a Microdrop whose device viewer provides layer contract 0.2.0 (the
 release that removed its built-in gamepad, #783). With any other contract
-version Microdrop logs a warning and mounts the layer anyway. Settings saved
-by an older Microdrop are moved onto this plugin's preferences node
-(`microdrop.gamepad_controls`) on its first start.
+version Microdrop logs a warning and mounts the layer anyway. Gamepad
+settings saved by an older Microdrop move onto this plugin's preferences node
+(`microdrop.gamepad_controls`) the first time Microdrop's device viewer starts
+(Microdrop releases carrying #783 or later).
 
 ## Build
 
