@@ -22,6 +22,11 @@ from microdrop_status_bar.consts import STATUS_BAR_ICONS
 # Local imports.
 from .consts import PKG, PKG_name
 
+# Logger import.
+from logger.logger_service import get_logger
+
+logger = get_logger(__name__)
+
 
 class GamepadControlsPlugin(Plugin):
     """Drive the device viewer's electrode cursor from a game controller.
@@ -78,20 +83,25 @@ class GamepadControlsPlugin(Plugin):
 
     def request_button_capture(self, action):
         """Bind the live gamepad's next button press to ``action``."""
-        service = self._live_service()
+        service = self._live_service("button capture")
 
         if service is not None:
             service.begin_button_capture(action)
 
     def request_reconnect(self):
         """Have the live gamepad re-attempt controller acquisition."""
-        service = self._live_service()
+        service = self._live_service("reconnect")
 
         if service is not None:
             service.reconnect_gamepad()
 
-    def _live_service(self):
-        if self.live_layer is None:
-            return None
+    def _live_service(self, request):
+        """Return the mounted layer's service, or log why ``request`` is dropped."""
+        service = None if self.live_layer is None else self.live_layer.service
 
-        return self.live_layer.service
+        if service is None:
+            logger.info(
+                f"Ignored gamepad {request} request: no gamepad layer is mounted"
+            )
+
+        return service

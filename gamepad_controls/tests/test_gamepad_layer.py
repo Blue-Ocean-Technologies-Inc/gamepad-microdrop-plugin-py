@@ -10,6 +10,9 @@
 
 """Tests for the gamepad's device viewer layer, against a fake pane."""
 
+# Third-party imports.
+import pytest
+
 # Microdrop package imports.
 from device_viewer.consts import LAYER_CONTRACT_VERSION, IDeviceViewerLayer
 
@@ -123,3 +126,40 @@ def test_a_status_bar_created_after_mounting_reaches_the_service(
     assert "Pad: MOVE up" in context.status_bar_manager.messages
 
     layer.detach()
+
+
+def test_a_failing_cleanup_still_withdraws_everything(
+    plugin, context, fake_pygame, monkeypatch
+):
+    layer = _mounted(plugin, context)
+    service = layer.service
+
+    def _raise():
+        raise RuntimeError("cleanup failed")
+
+    monkeypatch.setattr(layer.service, "cleanup", _raise)
+
+    # The error still reaches the host, which logs it.
+    with pytest.raises(RuntimeError, match="cleanup failed"):
+        layer.detach()
+
+    assert plugin.status_bar_icons == []
+    assert plugin.live_layer is None
+    assert layer.service is None
+    assert layer.preferences is None
+    assert layer.context is None
+
+    # Release the poll timer the patched cleanup skipped.
+    monkeypatch.undo()
+    service.cleanup()
+
+
+def test_a_second_detach_does_nothing(plugin, context, fake_pygame):
+    layer = _mounted(plugin, context)
+
+    layer.detach()
+    layer.detach()
+
+    assert plugin.status_bar_icons == []
+    assert plugin.live_layer is None
+    assert layer.context is None

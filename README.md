@@ -33,6 +33,11 @@ settings saved by an older Microdrop move onto this plugin's preferences node
 (`microdrop.gamepad_controls`) the first time Microdrop's device viewer starts
 (Microdrop releases carrying #783 or later).
 
+To get the gamepad back after upgrading Microdrop, open **Browse Plugins**,
+install `gamepad-microdrop-plugin` from the `microdrop-plugins` channel, and
+enable the `gamepad_ui` group. That group toggle replaces the old
+`gamepad_enabled` preference.
+
 ## Build
 
 ```bash

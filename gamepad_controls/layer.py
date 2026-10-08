@@ -81,23 +81,32 @@ class GamepadLayer(BaseDeviceViewerLayer):
         )
 
     def detach(self):
-        if self.service is not None:
-            self.service.cleanup()
+        """Withdraw everything, even when the service's cleanup raises.
+
+        A cleanup error still propagates (the host logs it) once the icon,
+        the live-layer slot and the preferences listener are released. A
+        second call finds nothing left to release and does nothing.
+        """
+        try:
+            if self.service is not None:
+                self.service.cleanup()
+        finally:
             self.service = None
 
-        if self.status_icon in self.plugin.status_bar_icons:
-            self.plugin.status_bar_icons.remove(self.status_icon)
+            if self.status_icon in self.plugin.status_bar_icons:
+                self.plugin.status_bar_icons.remove(self.status_icon)
 
-        self.status_icon = None
+            self.status_icon = None
 
-        if self.plugin.live_layer is self:
-            self.plugin.live_layer = None
+            if self.plugin.live_layer is self:
+                self.plugin.live_layer = None
 
-        # Stop the helper listening to the preferences node.
-        self.preferences.preferences = None
-        self.preferences = None
+            # Stop the helper listening to the preferences node.
+            if self.preferences is not None:
+                self.preferences.preferences = None
+                self.preferences = None
 
-        super().detach()
+            super().detach()
 
     @observe("context:status_bar_manager")
     def _share_status_bar(self, event):

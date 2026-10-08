@@ -10,6 +10,9 @@
 
 """Tests for the plugin's preferences contribution and its relays."""
 
+# Standard library imports.
+import logging
+
 # Microdrop package imports.
 from gamepad_controls.preferences import GamepadPreferences
 
@@ -41,8 +44,20 @@ def test_rebind_on_the_gamepad_tab_reaches_the_live_gamepad(
     layer.detach()
 
 
-def test_requests_with_no_gamepad_mounted_are_ignored(plugin):
-    plugin.request_button_capture("split")
-    plugin.request_reconnect()
+def test_requests_with_no_gamepad_mounted_are_ignored(plugin, caplog):
+    with caplog.at_level(logging.INFO, logger="gamepad_controls.plugin"):
+        plugin.request_button_capture("split")
+        plugin.request_reconnect()
 
     assert plugin.live_layer is None
+
+    ignored = [
+        record.getMessage()
+        for record in caplog.records
+        if record.name == "gamepad_controls.plugin" and record.levelno == logging.INFO
+    ]
+
+    assert ignored == [
+        "Ignored gamepad button capture request: no gamepad layer is mounted",
+        "Ignored gamepad reconnect request: no gamepad layer is mounted",
+    ]
