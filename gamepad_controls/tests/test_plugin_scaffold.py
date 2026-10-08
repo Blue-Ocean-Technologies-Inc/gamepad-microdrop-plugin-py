@@ -8,12 +8,11 @@
 #
 # Thanks for using Microdrop open source!
 
-"""Smoke tests for the gamepad_controls scaffold.
+"""Smoke tests for the gamepad_controls packaging.
 
-There is no gamepad behaviour to test yet (see AGENTS.md / #622 / #650) —
-these only guard the two things a scaffold must get right: the manifest
-parses and points at the plugin class, and importing the plugin module
-never imports pygame (a disabled plugin group must not load SDL).
+They guard what packaging must get right: the manifest parses and points at
+the plugin class, and importing the plugin module never imports pygame (a
+disabled plugin group must not load SDL).
 """
 
 # Standard library imports.

@@ -8,8 +8,11 @@
 #
 # Thanks for using Microdrop open source!
 
+# Standard library imports.
+from functools import partial
+
 # Enthought library imports.
-from envisage.api import Plugin
+from envisage.api import PREFERENCES_CATEGORIES, PREFERENCES_PANES, Plugin
 from traits.api import Instance, List
 
 # Microdrop package imports.
@@ -23,8 +26,9 @@ from .consts import PKG, PKG_name
 class GamepadControlsPlugin(Plugin):
     """Drive the device viewer's electrode cursor from a game controller.
 
-    Contributes the gamepad layer to the device viewer and, while that layer
-    is mounted, its joystick status-bar icon. pygame loads on the layer's
+    Contributes the gamepad layer to the device viewer, its joystick
+    status-bar icon while that layer is mounted, and the Gamepad preferences
+    tab. pygame loads on the layer's
     first device load, never on import, so a disabled group costs nothing.
     """
 
@@ -41,6 +45,10 @@ class GamepadControlsPlugin(Plugin):
     #: The mounted layer's joystick icon; the layer adds and removes it.
     status_bar_icons = List(contributes_to=STATUS_BAR_ICONS)
 
+    #: The Gamepad tab and its category.
+    preferences_panes = List(contributes_to=PREFERENCES_PANES)
+    preferences_categories = List(contributes_to=PREFERENCES_CATEGORIES)
+
     #: The layer mounted on the device viewer; None while none is.
     live_layer = Instance("gamepad_controls.layer.GamepadLayer")
 
@@ -51,3 +59,39 @@ class GamepadControlsPlugin(Plugin):
         from .layer import GamepadLayer
 
         return GamepadLayer(plugin=self)
+
+    def _preferences_panes_default(self):
+        from .preferences import GamepadPreferencesPane
+
+        return [
+            partial(
+                GamepadPreferencesPane,
+                request_button_capture=self.request_button_capture,
+                request_reconnect=self.request_reconnect,
+            )
+        ]
+
+    def _preferences_categories_default(self):
+        from .preferences import gamepad_tab
+
+        return [gamepad_tab]
+
+    def request_button_capture(self, action):
+        """Bind the live gamepad's next button press to ``action``."""
+        service = self._live_service()
+
+        if service is not None:
+            service.begin_button_capture(action)
+
+    def request_reconnect(self):
+        """Have the live gamepad re-attempt controller acquisition."""
+        service = self._live_service()
+
+        if service is not None:
+            service.reconnect_gamepad()
+
+    def _live_service(self):
+        if self.live_layer is None:
+            return None
+
+        return self.live_layer.service
