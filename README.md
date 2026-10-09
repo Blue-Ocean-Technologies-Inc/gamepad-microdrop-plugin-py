@@ -14,14 +14,29 @@ MicroDrop gamepad plugin, packaged as an installable conda package:
 point. See `docs/PLUGIN_DEVELOPMENT.md` in the MicroDrop source tree for the
 plugin model.
 
-## Status
+## What it does
 
-Scaffold only (issue #622). `GamepadControlsPlugin` is importable and its
-group toggles cleanly, but it does not yet drive the device viewer: the
-gamepad interaction, stepping, and preference logic currently lives in
-Microdrop's `device_viewer` package and moves here once issue #650 (the
-device viewer's pluggable interaction-layer contract) lands, so this plugin
-can reimplement it without importing `device_viewer` internals.
+Adds a game controller to Microdrop's device viewer, as a device viewer
+layer (`DEVICE_VIEWER_LAYERS`, layer contract 0.2.0):
+
+- D-pad: step the actuated electrodes (hold B: split, Y: add, X: remove)
+- A: clear all electrodes; Select: find liquid; Start: toggle realtime mode
+- a joystick icon in the status bar shows the controller state
+- the **Gamepad** preferences tab remaps buttons (Rebind captures the next
+  press) and sets the debounce timings; `MICRODROP_GAMEPAD_*` environment
+  variables still override the stored values
+
+Needs a Microdrop whose device viewer provides layer contract 0.2.0 (the
+release that removed its built-in gamepad, #783). With any other contract
+version Microdrop logs a warning and mounts the layer anyway. Gamepad
+settings saved by an older Microdrop move onto this plugin's preferences node
+(`microdrop.gamepad_controls`) the first time Microdrop's device viewer starts
+(Microdrop releases carrying #783 or later).
+
+To get the gamepad back after upgrading Microdrop, open **Browse Plugins**,
+install `gamepad-microdrop-plugin` from the `microdrop-plugins` channel, and
+enable the `gamepad_ui` group. That group toggle replaces the old
+`gamepad_enabled` preference.
 
 ## Build
 
